@@ -2,6 +2,9 @@
 var map;
 // var service;
 var infowindow;
+
+var lng, lat;
+
 function initialize() {
     var pyrmont = new google.maps.LatLng(-33.8665433, 151.1956316);
 
@@ -22,44 +25,98 @@ function initialize() {
             return;
         }
 
-        if (place.geometry.viewport) {
-            map.fitBounds(place.geometry.viewport);
-        } else {
+        	lat = place.geometry.lat();
+        	lng = place.geometry.lng();
+        
             map.setCenter(place.geometry.location);
             map.setZoom(17); // Why 17? Because it looks good.
-        }
+            console.log(place.geometry.location);
+            findCoupons(lng,lat,$('#search-coupon-input').val());
+        
     });
 
 
 }
 initialize();
 
-function getUserLocation () {
-	if(navigator.geolocation){
-		navigator.permissions.query({name:'geolocation'}).then(function(result) {
-		  if (result.state === 'granted') {
-		    navigator.geolocation.getCurrentPosition(function(response){
-				console.log("aaaa", response);
-			});
-		  } else if (result.state === 'prompt') {
-		    getLocationByIpInfo();
-		  }
-		  // Don't do anything if the permission was denied.
-		});
-	} else {
-		getLocationByIpInfo();
-	}
+function getUserLocation() {
+    if (navigator.geolocation) {
 
-	function getLocationByIpInfo () {
+        navigator.geolocation.getCurrentPosition(function(response) {
+            //console.log(response);
+            var position = {
+	           	lng: response.coords.longitude,
+	            lat: response.coords.latitude,
+	        }
+	        lng = position.lng;
+	        lat = position.lat;
+	        map.setCenter(position);
+	        map.setZoom(20);
+	        var geoCoder=new google.maps.Geocoder();
+	        geoCoder.geocode({'latLng':map.getCenter()},function(result,status){
+	        	$('#auto-complete').val(result[0].formatted_address);
+	        	findCoupons(position.lng,position.lat)
 
-		$.ajax({
-			url:'https://ipinfo.io',
-			dataType:'JSON',
+	        })
+        });
 
-		}).then(function(response){
-			console.log('response.!!!!! ', response);
-		})
+    }
+    else{
+    	console.log("location not identified");
+    }
 
-	}
+
 }
+
+
 getUserLocation();
+
+function findCoupons(lng,lat,query){
+	var url='https://api.sqoot.com/v2/deals';
+	var api_key="h7-Xq3wp2EUVjb4W-u80";
+	var location = lat + "," + lng;
+	var radius = 5;
+	$.ajax({
+		url,
+		dataType:'JSON',
+		data: {
+			api_key,
+			location,
+			radius,
+			per_page: 100,
+			query
+
+		}
+
+	}).then(function(response){
+		console.log(response);
+		$('#coupons-data').empty();
+		for(var i=0;i<response.deals.length;i++){
+			var deal = response.deals[i].deal;
+			$('#coupons-data').append('<h3>'+ deal.title +'</h3>')
+		}
+	})
+}
+
+$('#search-coupon-input').on('input',function(){
+	var query=$(this).val();
+	findCoupons(lng,lat,query);
+})
+
+
+/*var apiKeyCoupon=h7-Xq3wp2EUVjb4W-u80 ;
+var searchType=
+url:'https://api.sqoot.com/v2/deals/:id'*/
+
+
+
+
+
+
+
+
+
+
+
+
+
