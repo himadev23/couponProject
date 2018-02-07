@@ -4,6 +4,7 @@ var map;
 var infowindow;
 
 var lng, lat;
+var markers = [];
 
 function initialize() {
     var pyrmont = new google.maps.LatLng(-33.8665433, 151.1956316);
@@ -59,7 +60,6 @@ function getUserLocation() {
 	        	$('#auto-complete').val(result[0].formatted_address);
 	        	findCoupons(position.lng,position.lat);
 
-
 	        })
         });
 
@@ -79,6 +79,8 @@ function findCoupons(lng,lat,query){
 	var api_key="h7-Xq3wp2EUVjb4W-u80";
 	var location = lat + "," + lng;
 	var radius = 5;
+
+	map.setZoom(15);
 	$.ajax({
 		url,
 		dataType:'JSON',
@@ -94,10 +96,21 @@ function findCoupons(lng,lat,query){
 	}).then(function(response){
 		console.log(response);
 		$('#coupons-data').empty();
-		for(var i=0;i<response.deals.length;i++){
-			var deal = response.deals[i].deal;
-			$('#coupons-data').append('<h3>'+ deal.title +'</h3>'); createMarker(deal);
+		for (var i = 0; i < markers.length; i++){
+			markers[i].setMap(null);
 		}
+		markers = [];
+		var bounds  = new google.maps.LatLngBounds();
+		for (var i=0;i<response.deals.length;i++){
+			var deal = response.deals[i].deal;
+			$('#coupons-data').append('<h3>'+ deal +'</h3>'); 
+			var marker = createMarker(deal);
+			markers.push(marker);
+			var loc = new google.maps.LatLng(marker.position.lat(), marker.position.lng());
+			bounds.extend(loc);
+	
+		}
+		map.fitBounds(bounds);
 	})
 }
 
@@ -108,6 +121,11 @@ $('#search-coupon-input').on('input',function(){
 
 
 function createMarker(deal){
+	// console.log(deal);
+	var info = "<h4>"+ deal.title + " " + deal.merchant.name+ "<img src='"+deal.image_url+"' width='100px'>" + "</h4>"
+  var infowindow = new google.maps.InfoWindow({
+    content: info
+	}); 
 	var lat = deal.merchant.latitude; 
 	var lng = deal.merchant.longitude;
 	var latLng = new google.maps.LatLng(lat,lng);
@@ -115,13 +133,15 @@ function createMarker(deal){
 		position: latLng,
 		map: map,
 	}) 
+	marker.addListener('click', function() {
+    infowindow.open(map, marker);
+  });
+
 	console.log(marker);
 	return marker
 }
 
-/*var apiKeyCoupon=h7-Xq3wp2EUVjb4W-u80 
-var searchType=
-url:'https://api.sqoot.com/v2/deals/:id'*/
+
 
 
 
