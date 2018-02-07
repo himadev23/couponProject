@@ -96,7 +96,7 @@ function findCoupons(lng,lat,query){
 		$('#coupons-data').empty();
 		for(var i=0;i<response.deals.length;i++){
 			var deal = response.deals[i].deal;
-			$('#coupons-data').append('<h3>'+ deal.title +'</h3>')
+			$('#coupons-data').append('<h3>'+ deal.title +'</h3>'); createMarker(deal);
 		}
 	})
 }
@@ -107,7 +107,19 @@ $('#search-coupon-input').on('input',function(){
 })
 
 
-/*var apiKeyCoupon=h7-Xq3wp2EUVjb4W-u80 ;
+function createMarker(deal){
+	var lat = deal.merchant.latitude; 
+	var lng = deal.merchant.longitude;
+	var latLng = new google.maps.LatLng(lat,lng);
+	var marker = new google.maps.Marker({
+		position: latLng,
+		map: map,
+	}) 
+	console.log(marker);
+	return marker
+}
+
+/*var apiKeyCoupon=h7-Xq3wp2EUVjb4W-u80 
 var searchType=
 url:'https://api.sqoot.com/v2/deals/:id'*/
 
