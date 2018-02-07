@@ -14,6 +14,7 @@ function initialize() {
         zoom: 15
     });
     var input = document.getElementById('auto-complete');
+    map.controls[google.maps.ControlPosition.TOP_RIGHT].push(input);
     var autocomplete = new google.maps.places.Autocomplete(input);
     autocomplete.bindTo('bounds', map);
 
@@ -103,7 +104,15 @@ function findCoupons(lng,lat,query){
 		var bounds  = new google.maps.LatLngBounds();
 		for (var i=0;i<response.deals.length;i++){
 			var deal = response.deals[i].deal;
-			$('#coupons-data').append('<h3>'+ deal +'</h3>'); 
+            var div = $('<div>').addClass('deal');
+            div.append('<h2>'+ deal.title +'</h2>');
+             div.append('<img src="'+deal.image_url +'">');
+            div.append('<ul><li><h4>Price: <strike>'+(deal.price + deal.discount_amount) + '$</strike> ' + deal.price+'$</h4></li><li><h4>Discount Percentage:'+(deal.discount_percentage*100)+'</h4></li><li><h4>Expriration:'+deal.expires_at+'</h4></li></ul>')
+            //div.append('<p>'+deal.description+'</p>');
+            div.append('<h6></h6>');
+            div.append('<div style="float:none;clear:both;">');
+
+			$('#coupons-data').append(div); 
 			var marker = createMarker(deal);
 			markers.push(marker);
 			var loc = new google.maps.LatLng(marker.position.lat(), marker.position.lng());
