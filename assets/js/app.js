@@ -23,10 +23,12 @@ function initialize() {
             // pressed the Enter key, or the Place Details request failed.
             window.alert("No details available for input: '" + place.name + "'");
             return;
-        }
+        }else{
+        console.log('place!!!!!', place);
+    }
 
-        	lat = place.geometry.lat();
-        	lng = place.geometry.lng();
+        	lat = place.geometry.location.lat();
+        	lng = place.geometry.location.lng();
         
             map.setCenter(place.geometry.location);
             map.setZoom(17); // Why 17? Because it looks good.
@@ -55,7 +57,8 @@ function getUserLocation() {
 	        var geoCoder=new google.maps.Geocoder();
 	        geoCoder.geocode({'latLng':map.getCenter()},function(result,status){
 	        	$('#auto-complete').val(result[0].formatted_address);
-	        	findCoupons(position.lng,position.lat)
+	        	findCoupons(position.lng,position.lat);
+
 
 	        })
         });
