@@ -6,3 +6,11 @@
 .deal {
 	border-bottom: 1px solid #cccccc;
 }
+#nav-item{
+	float: right;
+	margin-left:1000px; 
+
+}
+#brand-image{
+	margin-top: 0px;
+}
