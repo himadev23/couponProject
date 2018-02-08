@@ -35,31 +35,20 @@ function initialize() {
 initialize();
 
 function getUserLocation () {
-	if(navigator.geolocation){
-		navigator.permissions.query({name:'geolocation'}).then(function(result) {
-		  if (result.state === 'granted') {
-		    navigator.geolocation.getCurrentPosition(function(response){
-				console.log("aaaa", response);
-			});
-		  } else if (result.state === 'prompt') {
-		    getLocationByIpInfo();
-		  }
-		  // Don't do anything if the permission was denied.
-		});
-	} else {
-		getLocationByIpInfo();
-	}
+    var options = {
+      enableHighAccuracy: true,
+      timeout: 5000,
+      maximumAge: 0
+    };
 
-	function getLocationByIpInfo () {
+    function success (resp) {
+        console.log("success", resp);
+    }
 
-		$.ajax({
-			url:'https://ipinfo.io',
-			dataType:'JSON',
-
-		}).then(function(response){
-			console.log('response.!!!!! ', response);
-		})
-
-	}
+    function error (resp) {
+        console.log("error", resp)
+    }
+    navigator.geolocation.getCurrentPosition(success, error, options);
+	
 }
 getUserLocation();
