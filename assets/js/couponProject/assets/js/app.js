@@ -43,7 +43,6 @@ function initialize() {
 }
 initialize();
 
-
 function getUserLocation() {
     if (navigator.geolocation) {
 
@@ -69,6 +68,8 @@ function getUserLocation() {
     else{
     	console.log("location not identified");
     }
+
+
 }
 
 
@@ -103,6 +104,27 @@ function findCoupons(lng,lat,query){
 		var bounds  = new google.maps.LatLngBounds();
 		for (var i=0;i<response.deals.length;i++){
 			var deal = response.deals[i].deal;
+<<<<<<< HEAD
+			var show_on_map = $('<a href="javascript:void(0);">').html('show on map');
+      var div = $('<div>').addClass('deal');
+      div.append(`<h2>${deal.title}</h2>`);
+      div.append(`<img src="${deal.image_url}">`);       
+      div.append(`
+      	<ul style="float:left">
+      		<li>
+      			<h4><strong>Price:</strong><strike> $${deal.price + deal.discount_amount} </strike>$${deal.price}</h4>
+      		</li>
+      		<li>
+      			<h4><strong>Discount Percentage:</strong> ${deal.discount_percentage*100}</h4>
+      		</li>
+      		<li>
+      			<h4><strong>Expiration:</strong> ${moment(deal.expires_at).format("dddd, MMMM Do YYYY, h:mm:ss a")}</h4>
+      		</li>
+    		</ul>`)
+     	
+      div.append('<h6></h6>');
+      div.append('<div style="float:none;clear:both;">');
+=======
             var div = $('<div>').addClass('deal');
             div.append('<h2>'+ deal.title +'</h2>');
              div.append('<img src="'+deal.image_url +'">');
@@ -111,12 +133,13 @@ function findCoupons(lng,lat,query){
             div.append('<h6></h6>');
             div.append('<div style="float:none;clear:both;">');
 
+>>>>>>> d5f98e54645a57da0ea78dbf3cab5f14c27c9325
 			$('#coupons-data').append(div); 
+
 			var marker = createMarker(deal);
 			markers.push(marker);
 			var loc = new google.maps.LatLng(marker.position.lat(), marker.position.lng());
 			bounds.extend(loc);
-	
 		}
 		map.fitBounds(bounds);
 	})
@@ -127,9 +150,15 @@ $('#search-coupon-input').on('input',function(){
 	findCoupons(lng,lat,query);
 })
 
+<<<<<<< HEAD
+
 var lastWindowOpened;
+
+=======
+var lastWindowOpened;
+>>>>>>> d5f98e54645a57da0ea78dbf3cab5f14c27c9325
 function createMarker(deal){
-	// console.log(deal);
+	console.log(deal);
 	var info = "<h4>"+ deal.title + " " + deal.merchant.name+ "<img src='"+deal.image_url+"' width='100px'>" + "</h4>"
   var infowindow = new google.maps.InfoWindow({
     content: info
@@ -141,13 +170,23 @@ function createMarker(deal){
 		position: latLng,
 		map: map,
 	}) 
+
+
 	marker.addListener('click', function() {
+<<<<<<< HEAD
+    if(lastWindowOpened){
+        lastWindowOpened.close();
+    }
+    infowindow.open(map, marker);
+    lastWindowOpened = infowindow;
+=======
         //console.log('this is' + this);
         if(lastWindowOpened){
             lastWindowOpened.close();
         }
         infowindow.open(map, marker);
         lastWindowOpened = infowindow;
+>>>>>>> d5f98e54645a57da0ea78dbf3cab5f14c27c9325
   });
 
 	console.log(marker);
