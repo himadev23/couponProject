@@ -107,7 +107,7 @@ function findCoupons(lng,lat,query){
             var div = $('<div>').addClass('deal');
             div.append('<h2>'+ deal.title +'</h2>');
              div.append('<img src="'+deal.image_url +'">');
-            div.append('<ul><li><h4>Price: <strike>'+(deal.price + deal.discount_amount) + '$</strike> ' + deal.price+'$</h4></li><li><h4>Discount Percentage:'+(deal.discount_percentage*100)+'</h4></li><li><h4>Expriration:'+deal.expires_at+'</h4></li></ul>')
+            div.append('<ul><li><h4>Price: <strike>'+(deal.price + deal.discount_amount) + '$</strike> ' + deal.price+'$</h4></li><li><h4>Discount Percentage:'+(deal.discount_percentage*100)+'</h4></li><li><h4>Expriration:'+deal.expires_amount+'</h4></li></ul>')
             //div.append('<p>'+deal.description+'</p>');
             div.append('<h6></h6>');
             div.append('<div style="float:none;clear:both;">');
@@ -128,7 +128,7 @@ $('#search-coupon-input').on('input',function(){
 	findCoupons(lng,lat,query);
 })
 
-
+var lastWindowOpened;
 function createMarker(deal){
 	// console.log(deal);
 	var info = "<h4>"+ deal.title + " " + deal.merchant.name+ "<img src='"+deal.image_url+"' width='100px'>" + "</h4>"
@@ -143,7 +143,12 @@ function createMarker(deal){
 		map: map,
 	}) 
 	marker.addListener('click', function() {
-    infowindow.open(map, marker);
+        //console.log('this is' + this);
+        if(lastWindowOpened){
+            lastWindowOpened.close();
+        }
+        infowindow.open(map, marker);
+        lastWindowOpened = infowindow;
   });
 
 	console.log(marker);
